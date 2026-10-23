@@ -1,0 +1,24 @@
+# Replace monitor.example.com and certificate paths with your actual host/certificate.
+server {
+  listen 80;
+  server_name monitor.example.com;
+  return 301 https://$host$request_uri;
+}
+server {
+  listen 443 ssl;
+  server_name monitor.example.com;
+  ssl_certificate /etc/letsencrypt/live/monitor.example.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/monitor.example.com/privkey.pem;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  client_max_body_size 3m;
+  location / {
+    proxy_pass http://127.0.0.1:3100;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_read_timeout 90s;
+  }
+}

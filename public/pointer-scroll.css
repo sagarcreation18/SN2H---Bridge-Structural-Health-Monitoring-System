@@ -1,0 +1,33 @@
+/* Keep native scrolling and pointer behavior, with a branded visual accent. */
+html {
+  scrollbar-color: #76664d #eee9dc;
+  scrollbar-width: auto;
+  scrollbar-gutter: stable;
+}
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+*::-webkit-scrollbar-track {
+  background: #eee9dc;
+}
+*::-webkit-scrollbar-thumb {
+  background: #76664d;
+  border: 3px solid #eee9dc;
+  border-radius: 12px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #292820;
+}
+#pageScrollProgress {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: #9b7946;
+  pointer-events: none;
+  z-index: 11000;
+}

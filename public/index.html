@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#F8F6EC" />
+    <title>SN²H — Bridge Structural Health Monitoring System</title>
+    <meta
+      name="description"
+      content="SN²H — We Sense What Eyes Can't See. An academic bridge vibration monitoring project by four final-year CSE students at RYMEC, Ballari."
+    />
+    <meta name="application-name" content="SN²H." />
+    <link rel="icon" type="image/png" href="/assets/images/sn2h-logo.png" />
+    <link rel="apple-touch-icon" href="/assets/images/sn2h-logo.png" />
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/motion.css" />
+    <link rel="stylesheet" href="/pointer-scroll.css" />
+    <link rel="stylesheet" href="/bridge-sensors.css" />
+    <link rel="stylesheet" href="/bridge-sensors.css" />
+    <script defer src="/vendor/chart/chart.umd.js"></script>
+    <script defer src="/socket.io/socket.io.js"></script>
+    <script defer src="/team.js"></script>
+    <script defer src="/alarm.js"></script>
+    <script defer src="/features.js"></script>
+    <script defer src="/advanced.js"></script>
+    <script defer src="/motion.js"></script>
+    <script defer src="/pointer-scroll.js"></script>
+    <script defer src="/bridge-sensors.js"></script>
+    <script defer src="/bridge-sensors.js"></script>
+    <script defer src="/app.js"></script>
+    <link rel="manifest" href="/manifest.webmanifest" />
+  </head>
+  <body>
+    <aside
+      id="criticalAlarm"
+      class="critical-alarm"
+      hidden
+      aria-label="Critical vibration alarm"
+    >
+      <div>
+        <strong id="criticalAlarmTitle" role="alert">CRITICAL VIBRATION</strong>
+        <p id="criticalAlarmDetail" aria-live="off"></p>
+      </div>
+      <div class="button-row">
+        <button id="muteCriticalAlarm" type="button" class="button">
+          Mute sound</button
+        ><button id="endAlarmPreview" type="button" class="button" hidden>
+          End preview
+        </button>
+      </div>
+    </aside>
+    <header class="topbar">
+      <a class="brand sn-brand" href="#overview" aria-label="SN²H dashboard">
+        <img
+          class="brand-logo"
+          src="/assets/images/sn2h-logo.png"
+          alt="Official SN²H circular bridge monitoring emblem"
+          width="56"
+          height="56"
+        />
+        <span class="brand-lockup"
+          ><span class="brand-name">SN²H.</span
+          ><span class="brand-caption">BRIDGE MONITORING</span></span
+        > </a
+      ><button
+        id="menu"
+        class="mobile-menu"
+        aria-expanded="false"
+        aria-controls="navigation"
+      >
+        Menu <i class="bi bi-list" aria-hidden="true"></i>
+      </button>
+      <nav id="navigation" aria-label="Main navigation"></nav>
+      <button id="unlock" class="button small">Admin access ↗</button>
+    </header>
+    <main class="container-fluid page-shell">
+      <div class="masthead">
+        <div id="projectIdentity" class="project-identity" hidden>
+          <img
+            class="hero-logo"
+            src="/assets/images/sn2h-logo.png"
+            alt="SN²H official emblem with bridge design and project tagline"
+            width="180"
+            height="180"
+            fetchpriority="high"
+          />
+          <div>
+            <div class="eyebrow">
+              STRUCTURAL MONITORING SYSTEM <span class="edition">/ 001</span>
+            </div>
+            <h1 class="project-wordmark">SN²H<span class="serif">.</span></h1>
+            <p class="project-subtitle">
+              Bridge Structural Health Monitoring System
+            </p>
+            <p class="intro project-tagline">We Sense What Eyes Can't See.</p>
+          </div>
+        </div>
+        <div class="system-meta">
+          <div>
+            <span id="streamDot" class="dot offline"></span
+            ><span id="stream">CONNECTING</span
+            ><span class="sim-label">SIMULATION</span>
+          </div>
+          <time id="clock"></time>
+          <time id="calendar" aria-label="Current date"></time>
+          <div id="connectivity">Checking sensor connectivity</div>
+          <div class="structure-meta">SN²H DEMONSTRATION · SECTOR 04</div>
+        </div>
+      </div>
+      <div id="error" class="notice error" role="alert" hidden></div>
+      <div id="toast" class="toast-message" role="status" hidden></div>
+      <section id="view-overview" class="view">
+        <div class="section-heading">
+          <span>01 / THE STRUCTURE</span
+          ><span>LIVE OBSERVATION <span class="dot normal"></span></span>
+        </div>
+        <div class="hero-grid">
+          <div class="bridge-panel" data-motion="paused">
+            <div class="panel-top">
+              <span>SN²H / DEMONSTRATION BRIDGE</span
+              ><span>01 — 04 / CONCEPTUAL SENSOR ARRAY</span>
+            </div>
+            <svg
+              class="bridge"
+              viewBox="0 0 920 390"
+              role="group"
+              aria-labelledby="bridge-title"
+            >
+              <title id="bridge-title">
+                Conceptual suspension bridge with four interactive sensor
+                positions. Animated conceptual suspension bridge with
+                illustrative traffic, sensor pulses and vibration waves. Motion
+                is exaggerated for illustration, not a physical structural model
+                or measured displacement.
+              </title>
+              <defs>
+                <pattern
+                  id="water"
+                  width="44"
+                  height="16"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path d="M0 8h22" stroke="#d9d4c8" stroke-width=".7" />
+                </pattern>
+              </defs>
+              <path d="M0 287h920v103H0z" fill="url(#water)" />
+              <path
+                d="M10 275h900M10 282h900"
+                stroke="#b0aa9b"
+                stroke-width="1"
+              />
+              <g fill="#e1dbcd" stroke="#8f8a7d" stroke-width="1.5">
+                <path
+                  d="M212 300V78h14v222zM263 300V78h14v222zM645 300V78h14v222zM696 300V78h14v222z"
+                />
+                <path
+                  d="M212 93h65v13h-65zM645 93h65v13h-65zM212 182h65v9h-65zM645 182h65v9h-65z"
+                />
+              </g>
+              <g class="bridge-span">
+                <g fill="none" stroke="#262620" stroke-width="2">
+                  <path
+                    d="M10 249Q120 225 219 86Q458 359 652 86Q787 242 910 249"
+                  />
+                  <path
+                    d="M10 259Q157 227 270 86Q510 359 703 86Q810 242 910 259"
+                  />
+                </g>
+                <g id="hangers" stroke="#8d887b" stroke-width="1"></g>
+                <path d="M10 250h900v10H10z" fill="#4e4d45" />
+                <path d="M10 253h900" stroke="#f8f6ec" stroke-width="1" />
+                <g class="sensor-point">
+                  <circle
+                    class="sensor-pulse pulse-a"
+                    cx="241"
+                    cy="250"
+                    r="17"
+                  />
+                  <circle
+                    cx="241"
+                    cy="250"
+                    r="13"
+                    fill="#f8f6ec"
+                    stroke="#416b50"
+                  />
+                  <circle cx="241" cy="250" r="4" fill="#416b50" />
+                  <path d="M241 231v-32h-50" fill="none" stroke="#8f8a7d" />
+                  <text x="143" y="192">SENSOR 01</text>
+                </g>
+                <g class="sensor-point">
+                  <circle
+                    class="sensor-pulse pulse-b"
+                    cx="462"
+                    cy="250"
+                    r="17"
+                  />
+                  <circle
+                    cx="462"
+                    cy="250"
+                    r="13"
+                    fill="#f8f6ec"
+                    stroke="#416b50"
+                  />
+                  <circle cx="462" cy="250" r="4" fill="#416b50" />
+                  <path d="M462 269v35h45" fill="none" stroke="#8f8a7d" />
+                  <text x="514" y="310">SENSOR 02</text>
+                </g>
+                <g class="sensor-point">
+                  <circle
+                    class="sensor-pulse pulse-c"
+                    cx="678"
+                    cy="250"
+                    r="17"
+                  />
+                  <circle
+                    cx="678"
+                    cy="250"
+                    r="13"
+                    fill="#f8f6ec"
+                    stroke="#416b50"
+                  />
+                  <circle cx="678" cy="250" r="4" fill="#416b50" />
+                  <path d="M678 230v-31h50" fill="none" stroke="#8f8a7d" />
+                  <text x="734" y="193">SENSOR 03</text>
+                </g>
+                <g class="bridge-vehicle vehicle-a" aria-hidden="true">
+                  <path d="M0 241h31v7H0zM5 236h17l5 5H2z" fill="#69665c" />
+                  <circle cx="7" cy="249" r="3" fill="#151515" />
+                  <circle cx="25" cy="249" r="3" fill="#151515" />
+                </g>
+                <g class="bridge-vehicle vehicle-b" aria-hidden="true">
+                  <path d="M0 237h32v11H0zM32 242h10v6H32z" fill="#8f8a7d" />
+                  <circle cx="8" cy="249" r="3" fill="#151515" />
+                  <circle cx="33" cy="249" r="3" fill="#151515" />
+                </g>
+              </g>
+              <g class="vibration-traces" aria-hidden="true">
+                <path
+                  class="vibration-trace"
+                  d="M55 342h170l16-8 16 16 16-16 16 8h140l16-10 16 20 16-20 16 10h160l16-8 16 16 16-16 16 8h174"
+                />
+                <path class="signal-travel" d="M20 257H900" />
+              </g>
+              <g class="water-ripples" aria-hidden="true">
+                <path
+                  d="M25 315h65m40 10h80m405-9h70m55 12h125M75 365h110m90-5h70m200 9h105m55-10h115"
+                />
+              </g>
+              <path class="bridge-scan" d="M0 78V285" aria-hidden="true" />
+            </svg>
+            <div class="panel-bottom">
+              <span
+                ><span class="dot normal"></span> SIMULATION / CONCEPTUAL SENSOR
+                POSITIONS</span
+              ><span>CONCEPTUAL VISUALIZATION ↗</span>
+            </div>
+            <div class="motion-controls">
+              <span>ILLUSTRATIVE MOTION · NOT MEASURED DISPLACEMENT</span
+              ><button
+                id="toggleBridgeMotion"
+                type="button"
+                aria-pressed="false"
+              >
+                Pause motion <i class="bi bi-pause" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="hero-reading">
+            <div class="eyebrow">CURRENT VIBRATION / ROLLING RMS</div>
+            <div class="big-reading">
+              <span data-value="rms">—</span><span class="unit">g</span>
+            </div>
+            <div class="health-line">
+              <span id="healthBadge" class="badge-state offline"
+                >Awaiting measurements</span
+              ><span class="tiny">SIMULATION</span>
+            </div>
+            <p class="reading-copy">
+              Every movement tells a story.<br />Observing acceleration across
+              three axes,<br />one measurement at a time.
+            </p>
+            <div class="reading-foot">
+              <span>LAST SENSOR UPDATE</span><time id="lastUpdate">—</time>
+            </div>
+          </div>
+        </div>
+        <div class="section-heading spaced">
+          <span>02 / MEASUREMENTS</span><span>ACCELERATION · UNITS IN g</span>
+        </div>
+        <div id="metrics" class="metric-grid"></div>
+        <div id="chartHome" class="section-heading spaced">
+          <span>03 / VIBRATION OVER TIME</span
+          ><a href="#monitoring">OPEN LIVE MONITOR ↗</a>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">
+            <h2>The rhythm of the structure<span class="serif">.</span></h2>
+            <span class="tiny">SIMULATION · LAST 120 SAMPLES</span>
+          </div>
+          <div class="chart-wrap">
+            <canvas
+              id="liveChart"
+              aria-label="Live vibration measurements"
+              role="img"
+            ></canvas>
+          </div>
+        </div>
+        <div class="section-heading spaced">
+          <span>04 / RECENT EVENTS</span><a href="#alerts">VIEW ALL EVENTS ↗</a>
+        </div>
+        <div id="recentAlerts"></div>
+      </section>
+      <section id="view-monitoring" class="view" hidden>
+        <div class="section-heading">
+          <span>LIVE MONITORING</span><span>SIMULATION</span>
+        </div>
+        <h2 class="view-title">
+          Movement, in real time<span class="serif">.</span>
+        </h2>
+        <p id="sampling" class="muted"></p>
+        <div id="liveMetrics" class="metric-grid"></div>
+        <div id="liveChartTarget"></div>
+        <p class="fineprint">
+          X/Y/Z include gravity. Dynamic magnitude removes the fixed calibrated
+          (0, 0, 1) g baseline. RMS uses the last 25 samples. No structural
+          safety determination is made.
+        </p>
+      </section>
+      <section id="view-analytics" class="view" hidden>
+        <div class="section-heading">
+          <span>HISTORICAL ANALYTICS</span><span>DATABASE OBSERVATIONS</span>
+        </div>
+        <h2 class="view-title">
+          A longer perspective<span class="serif">.</span>
+        </h2>
+        <div id="analyticsFilters"></div>
+        <div id="statistics" class="metric-grid" aria-live="polite"></div>
+        <div class="chart-card">
+          <div class="chart-title">
+            <h2>Vibration history</h2>
+            <span id="historyCount" class="tiny"></span>
+          </div>
+          <div class="chart-wrap">
+            <canvas
+              id="historyChart"
+              role="img"
+              aria-label="Stored RMS vibration history"
+            ></canvas>
+          </div>
+        </div>
+        <div class="two-columns spaced">
+          <div>
+            <h3>Hourly observations</h3>
+            <div id="hourly"></div>
+          </div>
+          <div>
+            <h3>Daily observations</h3>
+            <div id="daily"></div>
+          </div>
+        </div>
+      </section>
+      <section id="view-alerts" class="view" hidden>
+        <div class="section-heading">
+          <span>ALERT REGISTER</span><span>DEMONSTRATION THRESHOLDS</span>
+        </div>
+        <h2 class="view-title">
+          Signals worth a closer look<span class="serif">.</span>
+        </h2>
+        <form id="alertFilters" class="filters">
+          <label
+            >Search<input
+              name="search"
+              placeholder="Message or device" /></label
+          ><label
+            >Severity<select name="severity">
+              <option value="">All events</option>
+              <option value="warning">Warning</option>
+              <option value="critical">Critical</option>
+              <option value="offline">Offline</option>
+            </select></label
+          ><button class="button dark">Apply filters ↗</button>
+        </form>
+        <div id="alertsTable"></div>
+        <div class="pagination">
+          <button id="previousAlerts" class="button small">← Previous</button
+          ><span id="alertPage"></span
+          ><button id="nextAlerts" class="button small">Next →</button>
+        </div>
+      </section>
+      <section id="view-simulation" class="view" hidden>
+        <div class="section-heading">
+          <span>SIMULATION LAB</span><span>NO PHYSICAL HARDWARE CONNECTED</span>
+        </div>
+        <h2 class="view-title">
+          Explore the response<span class="serif">.</span>
+        </h2>
+        <p class="muted">
+          Repeatable mathematical signals with a 1 g gravity baseline. All
+          results are simulated.
+        </p>
+        <div class="notice simulation-access" role="status">
+          <div>
+            <span class="eyebrow">SIMULATION CONTROLS</span>
+            <p id="simulationAccessText">Checking administrator session…</p>
+          </div>
+          <button id="unlockSimulation" class="button small" type="button">
+            Unlock controls ↗
+          </button>
+        </div>
+        <div class="two-columns">
+          <form id="simulationForm" class="form-card">
+            <label
+              >Scenario<select id="scenario" name="scenario">
+                <option value="normal">Normal vibration</option>
+                <option value="light">Light traffic</option>
+                <option value="heavy">Heavy traffic</option>
+                <option value="wind">Wind vibration</option>
+                <option value="seismic">Seismic disturbance</option>
+                <option value="critical">Critical vibration</option>
+                <option value="custom">Custom simulation</option>
+              </select></label
+            ><label
+              >Amplitude <output id="amplitudeValue"></output
+              ><input
+                id="amplitude"
+                type="range"
+                min="0"
+                max="2"
+                step="0.005"
+                value="0.035" /></label
+            ><label
+              >Frequency <output id="frequencyValue"></output
+              ><input
+                id="frequency"
+                type="range"
+                min="0.05"
+                max="8"
+                step="0.05"
+                value="1.1" /></label
+            ><label
+              >Noise <output id="noiseValue"></output
+              ><input
+                id="noise"
+                type="range"
+                min="0"
+                max="0.5"
+                step="0.001"
+                value="0.008"
+            /></label>
+            <div class="button-row">
+              <button class="button dark" type="submit">
+                Start simulation ↗</button
+              ><button class="button" type="button" data-control="pause">
+                Pause</button
+              ><button class="button" type="button" data-control="resume">
+                Resume</button
+              ><button class="button" type="button" data-control="stop">
+                Stop</button
+              ><button class="button" type="button" data-control="reset">
+                Reset
+              </button>
+            </div>
+            <p id="simulationHelp" class="fineprint">
+              Stop before changing the scenario or parameters. Reset clears the
+              signal window and controls; database history is preserved.
+            </p>
+            <a class="simulation-live-link" href="#monitoring"
+              >View live measurements ↗</a
+            >
+          </form>
+          <div class="form-card simulation-summary">
+            <div class="eyebrow">SIMULATOR STATE</div>
+            <h3 id="simState">Loading…</h3>
+            <dl id="simDetails"></dl>
+            <p class="fineprint">
+              Warning ≥ 0.15 g RMS · Critical ≥ 0.35 g RMS by default. These are
+              demonstration thresholds, not certified structural safety limits.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section id="view-devices" class="view" hidden>
+        <div class="section-heading">
+          <span>DEVICE INVENTORY</span
+          ><span>ONE PIPELINE · DISTINCT SOURCES</span>
+        </div>
+        <h2 class="view-title">
+          Connected to the structure<span class="serif">.</span>
+        </h2>
+        <div id="devices" class="two-columns"></div>
+        <p class="fineprint">
+          Hardware is prepared for ESP32 + ADXL345. Firmware, wiring, and
+          physical buzzer operation remain untested.
+        </p>
+      </section>
+      <section id="view-reports" class="view" hidden>
+        <div class="section-heading">
+          <span>REPORTS & EXPORTS</span><span>MYSQL RECORDS</span>
+        </div>
+        <h2 class="view-title">
+          Observations, documented<span class="serif">.</span>
+        </h2>
+        <div id="reportFilters"></div>
+        <div class="two-columns">
+          <div class="form-card">
+            <span class="eyebrow">01 / SENSOR RECORDS</span>
+            <h3>Vibration history</h3>
+            <p>
+              Timestamped acceleration, dynamic magnitude, RMS and source
+              identity.
+            </p>
+            <button class="button dark" data-report="readings">
+              Download CSV ↓
+            </button>
+          </div>
+          <div class="form-card">
+            <span class="eyebrow">02 / EVENT REGISTER</span>
+            <h3>Alert history</h3>
+            <p>
+              Threshold and offline events, severity, and acknowledgment state.
+            </p>
+            <button class="button dark" data-report="alerts">
+              Download CSV ↓
+            </button>
+          </div>
+        </div>
+        <p class="fineprint">
+          Exports contain up to 10,000 database rows. Narrow the date range for
+          larger histories.
+        </p>
+        <div id="reportPreview"></div>
+      </section>
+      <section
+        id="view-about"
+        class="view sn2h-team-page"
+        aria-labelledby="sn2h-heroHeading"
+        data-team-active="false"
+        hidden
+      >
+        <div class="progress" id="sn2h-scrollProgress" aria-hidden="true"></div>
+        <div class="noise" aria-hidden="true"></div>
+        <div class="site" id="sn2h-top">
+          <div
+            class="team-subnav shell"
+            role="navigation"
+            aria-label="Our Team sections"
+          >
+            <a href="#overview" class="text-link">← DASHBOARD</a
+            ><a href="#about" data-team-target="sn2h-story">Our story</a
+            ><a href="#about" data-team-target="sn2h-team">The team</a
+            ><a href="#about" data-team-target="sn2h-institute">Our college</a
+            ><button
+              id="sn2h-pauseMotion"
+              class="team-motion-button"
+              type="button"
+              aria-pressed="false"
+            >
+              Pause animations
+            </button>
+          </div>
+
+          <section
+            class="hero shell"
+            id="sn2h-story"
+            aria-labelledby="sn2h-heroHeading"
+          >
+            <div class="hero-copy">
+              <div class="eyebrow tiny-line reveal">
+                ABOUT US <span class="sn2h-inline-1">/ 2026</span>
+              </div>
+              <h1 id="sn2h-heroHeading" class="reveal">
+                Four minds.<br /><span class="outline">One</span
+                ><br />frequency<span class="hero-period">.</span>
+              </h1>
+              <p class="reveal">
+                We are four final-year CSE students from RYMEC, Ballari,
+                building <strong>SN²H.</strong> — an ADXL345-based IoT bridge
+                vibration monitoring system that listens to the invisible pulse
+                of bridges.
+              </p>
+              <div class="hero-actions reveal">
+                <a class="btn" href="#about" data-team-target="sn2h-team"
+                  >MEET THE TEAM <span aria-hidden="true">↗</span></a
+                ><a
+                  class="text-link"
+                  href="#about"
+                  data-team-target="sn2h-institute"
+                  >OUR ROOTS ↓</a
+                >
+              </div>
+              <div class="hero-count reveal">
+                <div><strong>04</strong><small>curious minds</small></div>
+                <div class="vline"></div>
+                <div><strong>01</strong><small>shared vision</small></div>
+                <div class="vline"></div>
+                <div><strong>SN²H</strong><small>the identity</small></div>
+              </div>
+            </div>
+            <div
+              class="hero-stage"
+              id="sn2h-heroStage"
+              aria-label="Animated three-dimensional SN²H bridge monitoring illustration"
+            >
+              <div class="stage-grid" aria-hidden="true"></div>
+              <div class="stage-halo" aria-hidden="true"></div>
+              <div class="orbit o1" aria-hidden="true">
+                <span class="orbit-dot"></span>
+              </div>
+              <div class="orbit o2" aria-hidden="true">
+                <span class="orbit-dot"></span>
+              </div>
+              <div class="float-label one" aria-hidden="true">
+                <span class="pulse">⌁</span>
+                <div><small>PROJECT TYPE</small><b>IoT & Sensing</b></div>
+              </div>
+              <div class="hero-core" id="sn2h-heroCore">
+                <div class="core-back"></div>
+                <div class="core-front">
+                  <div class="core-id">
+                    <span>SN²H / 001</span><span>RYMEC · CSE</span>
+                  </div>
+                  <svg
+                    class="core-bridge"
+                    viewBox="0 0 300 175"
+                    role="img"
+                    aria-label="Suspension bridge signal illustration"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="sn2h-bridgeGrad"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                      >
+                        <stop stop-color="#585146" />
+                        <stop offset="1" stop-color="#282823" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M19 124 Q145 86 281 124"
+                      stroke="url(#sn2h-bridgeGrad)"
+                      stroke-width="9"
+                      fill="none"
+                    />
+                    <path
+                      d="M74 44 L74 135 M226 44 L226 135"
+                      stroke="#292a25"
+                      stroke-width="13"
+                    />
+                    <path
+                      d="M74 47 Q150 175 226 47"
+                      fill="none"
+                      stroke="#4d4942"
+                      stroke-width="2"
+                    />
+                    <g stroke="#575247" stroke-width="1.5">
+                      <path
+                        d="M94 74 V117 M115 92 V109 M138 103 V104 M160 102 V105 M182 89 V110 M204 68 V119"
+                      />
+                    </g>
+                    <path
+                      d="M23 142 Q150 115 278 142"
+                      stroke="#aea28e"
+                      stroke-width="2"
+                      stroke-dasharray="3 6"
+                      fill="none"
+                    />
+                    <circle
+                      cx="151"
+                      cy="99"
+                      r="8"
+                      fill="#786c58"
+                      stroke="#f5f0e4"
+                      stroke-width="4"
+                    />
+                    <path
+                      d="M151 89V40 M138 39q13 -20 26 0 M127 34q24 -38 48 0"
+                      fill="none"
+                      stroke="#ae8d60"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <div class="core-logo">
+                    <strong>SN<sup>2</sup>H.</strong
+                    ><small>EVERY SIGNAL MATTERS</small>
+                  </div>
+                </div>
+              </div>
+              <div class="float-label two" aria-hidden="true">
+                <span class="pulse">↗</span>
+                <div><small>OUR PURPOSE</small><b>Sense the unseen</b></div>
+              </div>
+            </div>
+          </section>
+          <div class="marquee" aria-label="We sense what eyes can't see">
+            <div class="marquee-track" aria-hidden="true">
+              <span>WE SENSE WHAT EYES CAN'T SEE.</span><i>✳</i
+              ><span>FOUR MINDS. ONE VISION.</span><i>✳</i
+              ><span>WE SENSE WHAT EYES CAN'T SEE.</span><i>✳</i
+              ><span>FOUR MINDS. ONE VISION.</span><i>✳</i
+              ><span>WE SENSE WHAT EYES CAN'T SEE.</span><i>✳</i
+              ><span>FOUR MINDS. ONE VISION.</span><i>✳</i
+              ><span>WE SENSE WHAT EYES CAN'T SEE.</span><i>✳</i
+              ><span>FOUR MINDS. ONE VISION.</span><i>✳</i>
+            </div>
+          </div>
+          <section
+            class="members shell"
+            id="sn2h-team"
+            aria-labelledby="sn2h-teamHeading"
+          >
+            <div class="section-head">
+              <div class="reveal">
+                <div class="eyebrow">
+                  <span class="dot"></span> 01 / THE PEOPLE
+                </div>
+                <h2 class="section-title" id="sn2h-teamHeading">
+                  The minds<br />behind <em>SN²H.</em>
+                </h2>
+              </div>
+              <p class="section-intro reveal">
+                Different perspectives. One common goal. Meet the four students
+                who imagined a bridge monitoring system that senses what the eye
+                cannot see.
+              </p>
+            </div>
+            <div class="team-grid">
+              <article
+                class="member reveal"
+                data-person="Sagar S Gourimath"
+                aria-label="Sagar S Gourimath profile card"
+              >
+                <div class="member-inner">
+                  <div class="card-face face-front">
+                    <div class="card-top">
+                      <span class="card-number">01 / 04</span
+                      ><span class="card-icon">↗</span>
+                    </div>
+                    <div class="portrait">
+                      <div class="halo"></div>
+                      <div class="halo h2"></div>
+                      <span class="axis"></span><span class="shadow-disc"></span
+                      ><span class="avatar">S</span>
+                    </div>
+                    <div class="card-details">
+                      <span class="role">THE PEOPLE / SN²H</span>
+                      <h3>Sagar S<br />Gourimath</h3>
+                      <div class="details-bottom">
+                        <span class="edu">FINAL YEAR · CSE</span
+                        ><button
+                          class="flip-open"
+                          type="button"
+                          aria-label="More about Sagar S Gourimath"
+                          aria-pressed="false"
+                        >
+                          ↗
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-face face-back">
+                    <div class="back-top">
+                      <span class="back-meta">01 / SN²H MEMBER</span>
+                      <h3>Sagar S<br />Gourimath</h3>
+                      <div class="rule sn2h-inline-2"></div>
+                      <div class="back-list">
+                        <div class="back-item">
+                          <label>COURSE</label
+                          ><span>B.E. · Computer Science & Engineering</span>
+                        </div>
+                        <div class="back-item">
+                          <label>ACADEMIC YEAR</label
+                          ><span>Final Year · 7th Semester</span>
+                        </div>
+                        <div class="back-item">
+                          <label>INSTITUTION</label><span>RYMEC, Ballari</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="back-footer">
+                      <small>FOUR MINDS. ONE VISION.</small
+                      ><button
+                        class="flip-close"
+                        type="button"
+                        aria-label="Return to Sagar card"
+                      >
+                        ↶
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article
+                class="member reveal"
+                data-person="Nandeswara M"
+                aria-label="Nandeswara M profile card"
+              >
+                <div class="member-inner">
+                  <div class="card-face face-front">
+                    <div class="card-top">
+                      <span class="card-number">02 / 04</span
+                      ><span class="card-icon">↗</span>
+                    </div>
+                    <div class="portrait">
+                      <div class="halo"></div>
+                      <div class="halo h2"></div>
+                      <span class="axis"></span><span class="shadow-disc"></span
+                      ><span class="avatar">N</span>
+                    </div>
+                    <div class="card-details">
+                      <span class="role">THE PEOPLE / SN²H</span>
+                      <h3>Nandeswara M</h3>
+                      <div class="details-bottom">
+                        <span class="edu">FINAL YEAR · CSE</span
+                        ><button
+                          class="flip-open"
+                          type="button"
+                          aria-label="More about Nandeswara M"
+                          aria-pressed="false"
+                        >
+                          ↗
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-face face-back">
+                    <div class="back-top">
+                      <span class="back-meta">02 / SN²H MEMBER</span>
+                      <h3>Nandeswara<br />M</h3>
+                      <div class="rule sn2h-inline-3"></div>
+                      <div class="back-list">
+                        <div class="back-item">
+                          <label>COURSE</label
+                          ><span>B.E. · Computer Science & Engineering</span>
+                        </div>
+                        <div class="back-item">
+                          <label>ACADEMIC YEAR</label
+                          ><span>Final Year · 7th Semester</span>
+                        </div>
+                        <div class="back-item">
+                          <label>INSTITUTION</label><span>RYMEC, Ballari</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="back-footer">
+                      <small>FOUR MINDS. ONE VISION.</small
+                      ><button
+                        class="flip-close"
+                        type="button"
+                        aria-label="Return to Nandeswara card"
+                      >
+                        ↶
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article
+                class="member reveal"
+                data-person="Nagaraja C Y"
+                aria-label="Nagaraja C Y profile card"
+              >
+                <div class="member-inner">
+                  <div class="card-face face-front">
+                    <div class="card-top">
+                      <span class="card-number">03 / 04</span
+                      ><span class="card-icon">↗</span>
+                    </div>
+                    <div class="portrait">
+                      <div class="halo"></div>
+                      <div class="halo h2"></div>
+                      <span class="axis"></span><span class="shadow-disc"></span
+                      ><span class="avatar">N</span>
+                    </div>
+                    <div class="card-details">
+                      <span class="role">THE PEOPLE / SN²H</span>
+                      <h3>Nagaraja C Y</h3>
+                      <div class="details-bottom">
+                        <span class="edu">FINAL YEAR · CSE</span
+                        ><button
+                          class="flip-open"
+                          type="button"
+                          aria-label="More about Nagaraja C Y"
+                          aria-pressed="false"
+                        >
+                          ↗
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-face face-back">
+                    <div class="back-top">
+                      <span class="back-meta">03 / SN²H MEMBER</span>
+                      <h3>Nagaraja<br />C Y</h3>
+                      <div class="rule sn2h-inline-4"></div>
+                      <div class="back-list">
+                        <div class="back-item">
+                          <label>COURSE</label
+                          ><span>B.E. · Computer Science & Engineering</span>
+                        </div>
+                        <div class="back-item">
+                          <label>ACADEMIC YEAR</label
+                          ><span>Final Year · 7th Semester</span>
+                        </div>
+                        <div class="back-item">
+                          <label>INSTITUTION</label><span>RYMEC, Ballari</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="back-footer">
+                      <small>FOUR MINDS. ONE VISION.</small
+                      ><button
+                        class="flip-close"
+                        type="button"
+                        aria-label="Return to Nagaraja card"
+                      >
+                        ↶
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article
+                class="member reveal"
+                data-person="Hemanth Kumar"
+                aria-label="Hemanth Kumar profile card"
+              >
+                <div class="member-inner">
+                  <div class="card-face face-front">
+                    <div class="card-top">
+                      <span class="card-number">04 / 04</span
+                      ><span class="card-icon">↗</span>
+                    </div>
+                    <div class="portrait">
+                      <div class="halo"></div>
+                      <div class="halo h2"></div>
+                      <span class="axis"></span><span class="shadow-disc"></span
+                      ><span class="avatar">H</span>
+                    </div>
+                    <div class="card-details">
+                      <span class="role">THE PEOPLE / SN²H</span>
+                      <h3>Hemanth<br />Kumar</h3>
+                      <div class="details-bottom">
+                        <span class="edu">FINAL YEAR · CSE</span
+                        ><button
+                          class="flip-open"
+                          type="button"
+                          aria-label="More about Hemanth Kumar"
+                          aria-pressed="false"
+                        >
+                          ↗
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-face face-back">
+                    <div class="back-top">
+                      <span class="back-meta">04 / SN²H MEMBER</span>
+                      <h3>Hemanth<br />Kumar</h3>
+                      <div class="rule sn2h-inline-5"></div>
+                      <div class="back-list">
+                        <div class="back-item">
+                          <label>COURSE</label
+                          ><span>B.E. · Computer Science & Engineering</span>
+                        </div>
+                        <div class="back-item">
+                          <label>ACADEMIC YEAR</label
+                          ><span>Final Year · 7th Semester</span>
+                        </div>
+                        <div class="back-item">
+                          <label>INSTITUTION</label><span>RYMEC, Ballari</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="back-footer">
+                      <small>FOUR MINDS. ONE VISION.</small
+                      ><button
+                        class="flip-close"
+                        type="button"
+                        aria-label="Return to Hemanth card"
+                      >
+                        ↶
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+          <section class="identity" aria-labelledby="sn2h-identityHeading">
+            <div class="identity-layout shell">
+              <div class="identity-text reveal">
+                <div class="eyebrow">02 / THE IDENTITY</div>
+                <h2 id="sn2h-identityHeading">
+                  FOUR MINDS.<br />ONE
+                  <span class="sn2h-inline-6">IDENTITY.</span>
+                </h2>
+                <p>
+                  <b>S</b> for Sagar. <b>N²</b> for Nandish and Nagaraj.
+                  <b>H</b> for Heymanth. Four engineering minds, brought
+                  together under one name: <strong>SN²H.</strong>
+                </p>
+                <a
+                  class="text-link"
+                  href="#about"
+                  data-team-target="sn2h-institute"
+                  >WHERE IT ALL BEGAN ↗</a
+                >
+              </div>
+              <div
+                class="identity-equation reveal"
+                aria-label="S plus N squared plus H equals the SN²H team"
+              >
+                <span class="equation-tile">S</span
+                ><span class="equation-tile">N<sup>2</sup></span
+                ><span class="equation-tile">H</span
+                ><span class="identity-caption"
+                  >ENGINEERED TOGETHER / 2026</span
+                >
+              </div>
+            </div>
+          </section>
+          <section
+            class="institute"
+            id="sn2h-institute"
+            aria-labelledby="sn2h-instituteHeading"
+          >
+            <div class="shell">
+              <div class="institute-main">
+                <div class="reveal">
+                  <div class="eyebrow sn2h-inline-7">03 / OUR ROOTS</div>
+                  <h2 id="sn2h-instituteHeading">
+                    Where it<br /><em>all began.</em>
+                  </h2>
+                </div>
+                <div class="blurb reveal">
+                  <p>
+                    Rao Bahadur Y. Mahabaleswarappa Engineering College,
+                    Ballari.
+                  </p>
+                  <small
+                    >Four final-year students from the Department of Computer
+                    Science and Engineering. Exploring technology, sensing, and
+                    the unseen movements of the built world.</small
+                  >
+                </div>
+              </div>
+              <div class="institute-data reveal">
+                <div>
+                  <span>INSTITUTION</span><strong>RYMEC, Ballari</strong>
+                </div>
+                <div>
+                  <span>DEPARTMENT</span
+                  ><strong>Computer Science & Engineering</strong>
+                </div>
+                <div>
+                  <span>ACADEMIC JOURNEY</span
+                  ><strong
+                    >Bachelor of Engineering · Final Year · 7th Semester · Batch
+                    2023–2027</strong
+                  >
+                </div>
+              </div>
+              <div class="team-return">
+                <a class="text-link" href="#overview">BACK TO DASHBOARD ↗</a
+                ><a class="text-link" href="#about" data-team-target="sn2h-top"
+                  >BACK TO TOP ↑</a
+                >
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+      <section id="view-maintenance" class="view" hidden>
+        <h2 class="view-title">Inspections & maintenance</h2>
+        <p>Record inspections, evidence, repairs and the next planned visit.</p>
+        <div id="maintenanceContent"></div>
+      </section>
+      <section id="view-settings" class="view" hidden>
+        <div class="section-heading">
+          <span>MONITORING SETTINGS</span
+          ><span>ADMINISTRATOR ACCESS REQUIRED TO SAVE</span>
+        </div>
+        <h2 class="view-title">
+          Define the observation<span class="serif">.</span>
+        </h2>
+        <div class="notice alarm-preview-controls">
+          <div>
+            <span class="eyebrow">CRITICAL ALARM DEMONSTRATION</span>
+            <p>
+              Preview the site-wide red alert, pulsing warning banner and sound
+              for 20 seconds. This does not change sensor readings or alert
+              history.
+            </p>
+          </div>
+          <div class="button-row">
+            <button id="previewCriticalAlarm" type="button" class="button dark">
+              Preview critical alarm · 20 seconds</button
+            ><button id="enableAlarmSound" type="button" class="button">
+              Enable alarm sound
+            </button>
+          </div>
+          <p id="alarmAudioStatus" role="status">
+            Sound needs a browser interaction. Use Enable alarm sound for this
+            tab.
+          </p>
+        </div>
+        <form id="settingsForm" class="form-card settings-grid">
+          <label
+            >Warning RMS (g)<input
+              name="warning"
+              type="number"
+              min="0.01"
+              max="5"
+              step="0.01"
+              required /></label
+          ><label
+            >Critical RMS (g)<input
+              name="critical"
+              type="number"
+              min="0.02"
+              max="10"
+              step="0.01"
+              required /></label
+          ><label
+            >Sampling interval (ms)<input
+              name="samplingMs"
+              type="number"
+              min="50"
+              max="2000"
+              step="1"
+              required /></label
+          ><label
+            >Offline timeout (ms)<input
+              name="offlineMs"
+              type="number"
+              min="1000"
+              max="120000"
+              step="1"
+              required /></label
+          ><label class="check-label"
+            ><input name="sound" type="checkbox" /> Sound on critical
+            alerts</label
+          ><label class="check-label"
+            ><input name="autoStart" type="checkbox" /> Start simulator on
+            server startup</label
+          >
+          <p class="fineprint">
+            Demonstration thresholds only. These values do not certify
+            structural safety. Browser alert audio requires a user interaction.
+          </p>
+          <div><button class="button dark">Save settings ↗</button></div>
+        </form>
+      </section>
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-identity">
+            <a
+              class="brand sn-brand"
+              href="#overview"
+              aria-label="SN²H dashboard"
+              ><img
+                class="brand-logo"
+                src="/assets/images/sn2h-logo.png"
+                alt="SN²H circular emblem"
+                width="64"
+                height="64"
+                loading="lazy"
+              /><span class="brand-name">SN²H.</span></a
+            >
+            <p>We Sense What Eyes Can't See.</p>
+          </div>
+          <div class="footer-project">
+            <h2>Bridge Structural Health<br />Monitoring System</h2>
+            <p>Developed by SN²H Team</p>
+            <a href="#about">Meet the team ↗</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 SN²H Team. Academic Project.</p>
+          <p>
+            SIMULATION · DEMONSTRATION THRESHOLDS<br />Accelerometer
+            measurements alone do not establish structural safety.
+          </p>
+        </div>
+      </footer>
+    </main>
+    <dialog id="authDialog">
+      <form id="authForm">
+        <div class="eyebrow">ADMINISTRATOR SESSION</div>
+        <h2>Unlock controls<span class="serif">.</span></h2>
+        <p>
+          Enter ADMIN_TOKEN from your local .env file.<br />The token is kept
+          only in memory for this tab.
+        </p>
+        <p id="authError" role="alert"></p>
+        <label
+          >Admin token<input
+            type="password"
+            id="adminToken"
+            autocomplete="off"
+            required
+            minlength="24"
+        /></label>
+        <div class="button-row">
+          <button class="button dark">Unlock ↗</button
+          ><button id="cancelAuth" class="button" type="button">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

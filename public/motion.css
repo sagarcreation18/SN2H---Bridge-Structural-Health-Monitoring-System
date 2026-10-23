@@ -1,0 +1,208 @@
+/* App interaction motion. The supplied team template retains its own lifecycle. */
+.ui-arrival-word {
+  display: inline-block;
+  transform-origin: 50% 100%;
+}
+.ui-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.5s ease var(--ui-delay, 0ms),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--ui-delay, 0ms);
+}
+.ui-reveal.ui-revealed {
+  opacity: 1;
+  transform: none;
+}
+.metric .value {
+  font-variant-numeric: tabular-nums;
+}
+.view:not(.sn2h-team-page) .form-card,
+.view:not(.sn2h-team-page) .chart-card {
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.25s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .view:not(.sn2h-team-page) .form-card:hover,
+  .view:not(.sn2h-team-page) .chart-card:hover {
+    border-color: #aca18a;
+    box-shadow: 0 7px 22px rgba(35, 30, 20, 0.055);
+  }
+  .view:not(.sn2h-team-page) tbody tr {
+    transition: background-color 0.18s ease;
+  }
+  .view:not(.sn2h-team-page) tbody tr:hover {
+    background: rgba(164, 120, 94, 0.06);
+  }
+}
+.button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+input,
+select,
+textarea {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  box-shadow: 0 0 0 3px rgba(181, 154, 103, 0.13);
+}
+.topbar nav a.active::after {
+  animation: sn2h-ui-underline 0.28s ease-out;
+  transform-origin: left;
+}
+dialog[open] {
+  animation: sn2h-ui-dialog 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+dialog[open]::backdrop {
+  animation: sn2h-ui-fade 0.2s ease;
+}
+.toast-message:not([hidden]) {
+  animation: sn2h-ui-notice 0.25s ease-out;
+}
+#error:not([hidden]) {
+  animation: sn2h-ui-notice 0.25s ease-out;
+}
+#uiRequestActivity {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 85;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+#uiRequestActivity.is-loading {
+  opacity: 1;
+}
+#uiRequestActivity::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #a4785e;
+  transform: translateX(-100%);
+  animation: sn2h-ui-request 1.5s ease-in-out infinite;
+  animation-play-state: paused;
+}
+#uiRequestActivity.is-loading::before {
+  animation-play-state: running;
+}
+@keyframes sn2h-ui-underline {
+  from {
+    transform: scaleX(0.15);
+    opacity: 0.2;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+@keyframes sn2h-ui-dialog {
+  from {
+    opacity: 0;
+    transform: translateY(9px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes sn2h-ui-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes sn2h-ui-notice {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes sn2h-ui-request {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+@media (max-width: 900px) {
+  .topbar nav.open {
+    animation: sn2h-ui-notice 0.2s ease-out;
+  }
+}
+html[data-ui-motion="paused"] .ui-reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+html[data-ui-motion="paused"] dialog,
+html[data-ui-motion="paused"] dialog::backdrop,
+html[data-ui-motion="paused"] .toast-message,
+html[data-ui-motion="paused"] #error,
+html[data-ui-motion="paused"] .topbar nav,
+html[data-ui-motion="paused"] .topbar nav a::after {
+  animation: none !important;
+}
+html[data-ui-motion="paused"] #uiRequestActivity::before {
+  animation: none;
+  transform: none;
+  opacity: 0.4;
+}
+html[data-ui-motion="paused"] .view:not(.sn2h-team-page) .form-card,
+html[data-ui-motion="paused"] .view:not(.sn2h-team-page) .chart-card,
+html[data-ui-motion="paused"] input,
+html[data-ui-motion="paused"] select,
+html[data-ui-motion="paused"] textarea {
+  transition: none;
+}
+html[data-ui-motion="paused"] .button {
+  transition: none;
+}
+html[data-ui-visibility="hidden"] #uiRequestActivity::before {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  dialog[open],
+  dialog[open]::backdrop,
+  .toast-message:not([hidden]),
+  #error:not([hidden]),
+  .topbar nav.open,
+  .topbar nav a.active::after {
+    animation: none !important;
+  }
+  #uiRequestActivity::before {
+    animation: none;
+    transform: none;
+    opacity: 0.4;
+  }
+  .view:not(.sn2h-team-page) .form-card,
+  .view:not(.sn2h-team-page) .chart-card,
+  input,
+  select,
+  textarea {
+    transition: none;
+  }
+  .button:active:not(:disabled) {
+    transform: none;
+  }
+}

@@ -1,0 +1,5 @@
+node_modules/
+.env
+.runtime/
+firmware/**/config.h
+output/backups/

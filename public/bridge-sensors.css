@@ -1,0 +1,182 @@
+.bridge-sensor-marker {
+  --sensor-color: #787469;
+  cursor: pointer;
+}
+.bridge-sensor-marker[data-status="normal"] {
+  --sensor-color: #34754d;
+}
+.bridge-sensor-marker[data-status="warning"] {
+  --sensor-color: #ad7917;
+}
+.bridge-sensor-marker[data-status="critical"] {
+  --sensor-color: #c12d27;
+}
+.bridge-sensor-marker .sensor-hit {
+  fill: transparent;
+  stroke: none;
+}
+.bridge-sensor-marker .sensor-shell {
+  fill: #fffdf7;
+  stroke: var(--sensor-color);
+  stroke-width: 2;
+}
+.bridge-sensor-marker .sensor-light {
+  fill: var(--sensor-color);
+}
+.bridge-sensor-marker .sensor-status-ring {
+  fill: none;
+  stroke: var(--sensor-color);
+  stroke-width: 1.5;
+  opacity: 0.3;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.bridge-sensor-marker:is(
+    [data-status="normal"],
+    [data-status="warning"],
+    [data-status="critical"]
+  )
+  .sensor-status-ring {
+  animation: sn2h-sensor-ring 2.6s ease-out infinite;
+}
+.bridge-sensor-marker:is(
+    [data-status="normal"],
+    [data-status="warning"],
+    [data-status="critical"]
+  )
+  .sensor-light {
+  animation: sn2h-sensor-light 2.6s ease-in-out infinite;
+}
+.bridge-sensor-marker[data-status="critical"]
+  :is(.sensor-status-ring, .sensor-light) {
+  animation-duration: 1.8s;
+}
+.bridge-sensor-marker .sensor-callout {
+  fill: none;
+  stroke: #989182;
+  stroke-width: 1;
+}
+.bridge-sensor-marker .sensor-location-label {
+  font-size: 9px;
+  letter-spacing: 0.7px;
+  fill: #514b42;
+}
+.bridge-sensor-marker.is-selected .sensor-shell,
+.bridge-sensor-marker:focus-visible .sensor-shell {
+  stroke-width: 4;
+}
+.bridge-sensor-marker:focus-visible {
+  outline: 2px solid #786c58;
+  outline-offset: 3px;
+}
+.bridge-sensor-help {
+  margin: 10px 20px;
+}
+.bridge-sensor-legend {
+  display: flex;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  border-top: 1px solid var(--line);
+  font-size: 10px;
+}
+.bridge-sensor-legend span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.bridge-sensor-legend small {
+  width: 100%;
+  color: var(--muted);
+}
+.legend-light {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #787469;
+}
+.legend-light.normal {
+  background: #34754d;
+}
+.legend-light.warning {
+  background: #ad7917;
+}
+.legend-light.critical {
+  background: #c12d27;
+}
+.bridge-sensor-details {
+  padding: 18px 20px;
+  margin: 0 16px 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid #787469;
+  background: var(--cream);
+  font-size: 12px;
+}
+.bridge-sensor-details[data-status="normal"] {
+  border-left-color: #34754d;
+}
+.bridge-sensor-details[data-status="critical"] {
+  border-left-color: #c12d27;
+}
+.bridge-sensor-details[data-status="warning"] {
+  border-left-color: #ad7917;
+}
+.bridge-sensor-details h3 {
+  font-size: 17px;
+  margin: 0;
+}
+.bridge-sensor-details .button-row {
+  flex-wrap: wrap;
+}
+.bridge-sensor-details p {
+  margin-top: 12px;
+}
+.bridge-sensor-details .fineprint {
+  font-size: 10px;
+}
+@keyframes sn2h-sensor-ring {
+  0% {
+    opacity: 0.65;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.65);
+  }
+}
+@keyframes sn2h-sensor-light {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bridge-sensor-marker .sensor-status-ring,
+  .bridge-sensor-marker .sensor-light {
+    animation: none !important;
+    opacity: 1;
+  }
+}
+@media (max-width: 600px) {
+  .bridge-sensor-legend {
+    padding: 12px;
+    font-size: 9px;
+  }
+  .bridge-sensor-details {
+    margin: 0 8px 12px;
+    padding: 14px;
+  }
+  .bridge-sensor-marker .sensor-location-label {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+}
+.bridge-panel[data-motion="paused"]
+  .bridge-sensor-marker
+  :is(.sensor-status-ring, .sensor-light) {
+  animation-play-state: paused;
+}
